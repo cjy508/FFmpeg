@@ -25,7 +25,9 @@
 #include "rdt.h"
 #include "url.h"
 #include "version.h"
-
+//定义的宏？宏的速度会快一点？注册AVOutputFormat  
+//define中，#用来把参数转换成字符串，##则用来连接前后两个参数，把它们变成一个字符串。  
+//感觉有点像JAva中的EL，可以随意拼接字符串
 #define REGISTER_MUXER(X, x)                                            \
     {                                                                   \
         extern AVOutputFormat ff_##x##_muxer;                           \
@@ -33,19 +35,24 @@
             av_register_output_format(&ff_##x##_muxer);                 \
     }
 
+//定义的宏？宏的速度会快一点？注册AVInputFormat
 #define REGISTER_DEMUXER(X, x)                                          \
     {                                                                   \
         extern AVInputFormat ff_##x##_demuxer;                          \
         if (CONFIG_##X##_DEMUXER)                                       \
             av_register_input_format(&ff_##x##_demuxer);                \
     }
+//注册函数av_register_input_format
 
+//定义的宏？宏的速度会快一点？两个一起注册！
 #define REGISTER_MUXDEMUX(X, x) REGISTER_MUXER(X, x); REGISTER_DEMUXER(X, x)
 
 static void register_all(void)
 {
+	//注册所有的codec 
     avcodec_register_all();
 
+	//注册所有的MUXER（复用器和解复用器）
     /* (de)muxers */
     REGISTER_MUXER   (A64,              a64);
     REGISTER_DEMUXER (AA,               aa);
